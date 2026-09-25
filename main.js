@@ -154,22 +154,39 @@ document.addEventListener('DOMContentLoaded', () => {
       skills: ['Ingénierie pédagogique', 'Formation présentielle', 'Coaching individuel', 'Assurance santé & prévoyance', 'Création de supports'],
       synergy: 'Casquettes mobilisées : Formatrice, Coach & Commerciale.'
     },
+        'alkimy': {
+      company: 'Alkimiy',
+      role: 'Sales Business Developer – Closing High Ticket',
+      period: '2026 — Aujourd\'hui',
+      location: 'Casablanca · Hybride',
+      context: 'Closing de programmes d\'accompagnement premium auprès d\'entrepreneurs et porteurs de projets.',
+      missions: [
+        'Entretiens individuels approfondis et qualification stratégique des porteurs de projets.',
+        'Vente consultative d\'excellence selon la méthodologie SPIN Selling, de la découverte à la décision.',
+        'Traitement et levée des objections complexes avec une approche éthique et bienveillante.',
+        'Closing de programmes d\'accompagnement haut de gamme à forte valeur ajoutée.',
+        'Suivi relationnel et accompagnement personnalisé vers l\'atteinte des objectifs.'
+      ],
+      skills: ['Closing High Ticket', 'Vente consultative', 'Méthode SPIN Selling', 'Qualification de prospects', 'Gestion des objections'],
+      synergy: 'Casquettes mobilisées : Commerciale, Coach & Stratégie.'
+    },
     'alkimiy': {
       company: 'Alkimiy',
-      role: 'Sales Business Developer',
-      period: 'Aujourd\'hui',
-      location: 'Distanciel / International',
-      context: 'Développement commercial et programmes d’accompagnement premium (Boss Energy, Liberty Webi).',
+      role: 'Sales Business Developer – Closing High Ticket',
+      period: '2026 — Aujourd\'hui',
+      location: 'Casablanca · Hybride',
+      context: 'Closing de programmes d\'accompagnement premium auprès d\'entrepreneurs et porteurs de projets.',
       missions: [
-        'Analyse approfondie des besoins et diagnostic des profils d’entrepreneurs et dirigeants.',
-        'Conduite d’échanges consultatifs à forte valeur ajoutée selon les méthodes de vente éthique et diagnostic SPIN.',
-        'Gestion des objections complexes et accompagnement de la prise de décision pour des programmes premium.',
-        'Closing consultatif centré sur l’alignement des objectifs et la création de valeur durable.'
+        'Entretiens individuels approfondis et qualification stratégique des porteurs de projets.',
+        'Vente consultative d\'excellence selon la méthodologie SPIN Selling, de la découverte à la décision.',
+        'Traitement et levée des objections complexes avec une approche éthique et bienveillante.',
+        'Closing de programmes d\'accompagnement haut de gamme à forte valeur ajoutée.',
+        'Suivi relationnel et accompagnement personnalisé vers l\'atteinte des objectifs.'
       ],
-      skills: ['Vente consultative', 'Diagnostic SPIN', 'Closing éthique', 'Relation client premium', 'Gestion des objections'],
-      synergy: 'Casquettes mobilisées : Commerciale, Coach & Digital.'
+      skills: ['Closing High Ticket', 'Vente consultative', 'Méthode SPIN Selling', 'Qualification de prospects', 'Gestion des objections'],
+      synergy: 'Casquettes mobilisées : Commerciale, Coach & Stratégie.'
     },
-    'olm': {
+'olm': {
       company: 'OLM Assurances',
       role: 'Manager Commercial & Formation',
       period: '2023 — 2024',
@@ -273,6 +290,21 @@ document.addEventListener('DOMContentLoaded', () => {
       ],
       skills: ['Télévente santé', 'Découverte des besoins', 'Traitement des objections', 'Fidélisation client', 'Rigueur d’écoute'],
       synergy: 'Casquettes mobilisées : Commerciale.'
+    },
+    'majorel': {
+      company: 'Majorel / Phone Group',
+      role: 'Téléconseillère – Orange France',
+      period: '2008 — 2010',
+      location: 'Casablanca · Sur site',
+      context: 'Service client Orange Mobile — 3 activités majeures au service des abonnés.',
+      missions: [
+        'Relation Client : accueil personnalisé, écoute active, conseil sur les offres et fidélisation des abonnés Orange Mobile.',
+        'SAV (Service Après-Vente) : prise en charge des réclamations et résolution d\'incidents clients.',
+        'Support Technique N2 : diagnostic des pannes et coordination avec les équipes d\'expertise technique Orange France.',
+        'Respect rigoureux des normes de qualité de service et dépassement des indicateurs de satisfaction (CSAT).'
+      ],
+      skills: ['Relation client', 'Service après-vente (SAV)', 'Support technique N2', 'Téléphonie mobile', 'Fidélisation'],
+      synergy: 'Casquettes mobilisées : Commerciale, Écoute active & Rigueur opérationnelle.'
     }
   };
 
