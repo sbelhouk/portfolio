@@ -25,7 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=20260927-4">
+  <link rel="stylesheet" href="style.css?v=20260927-5">
 </head>
 <body>
   <!-- Skip Link Accessibilité -->
@@ -41,10 +41,10 @@
         <ul class="nav-menu">
           <li><a href="#accueil" class="nav-link active">Accueil</a></li>
           <li><a href="#profil" class="nav-link">Profil</a></li>
+          <li><a href="#experiences" class="nav-link">Expériences</a></li>
           <li><a href="#parcours" class="nav-link">Parcours</a></li>
           <li><a href="#casquettes" class="nav-link">Casquettes</a></li>
           <li><a href="#expertises" class="nav-link">Expertises</a></li>
-          <li><a href="#experiences" class="nav-link">Expériences</a></li>
           <li><a href="#videos" class="nav-link">Vidéos</a></li>
           <li><a href="#certifications" class="nav-link">Certifications</a></li>
           <li><a href="#methode" class="nav-link">Méthode</a></li>
@@ -223,25 +223,228 @@
     </section>
 
         <!-- ======================================================================
-         03 — MON PARCOURS (ESCALIER 3D DESCENDANT)
+         03 — MES EXPÉRIENCES (VUE DÉTAILLÉE INTERACTIVE)
+         ====================================================================== -->
+    <section id="experiences" class="experiences-section section-padding" aria-labelledby="experiences-title">
+      <div class="container">
+        
+        <div class="section-header">
+          <span class="section-tag">03 — Mes Expériences</span>
+          <h2 id="experiences-title" class="section-title">
+            Un parcours riche et <span class="gold-text">diversifié</span>
+          </h2>
+          <p class="section-subtitle">
+            Cliquez sur une expérience pour ouvrir sa fiche détaillée : contexte, missions opérationnelles, compétences mobilisées et complémentarité.
+          </p>
+        </div>
+
+        <!-- Filtres par Casquette -->
+        <div class="experiences-filter" role="tablist" aria-label="Filtrer les expériences">
+          <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">Toutes les expériences</button>
+          <button class="filter-btn" data-filter="formation" role="tab" aria-selected="false">Formation & Pédagogie</button>
+          <button class="filter-btn" data-filter="commercial" role="tab" aria-selected="false">Commercial & Vente</button>
+          <button class="filter-btn" data-filter="management" role="tab" aria-selected="false">Management & RH</button>
+          <button class="filter-btn" data-filter="digital" role="tab" aria-selected="false">Digital & IA</button>
+        </div>
+
+        <!-- Grille de Cartes d'Expériences -->
+        <div class="experiences-grid">
+
+          <!-- Alkimy -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="commercial" data-exp-id="alkimy" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Alkimy">
+            <div class="exp-badge-row">
+              <span class="exp-period">2026 — Aujourd'hui</span>
+              <span class="exp-tag">Commercial</span>
+            </div>
+            <h3 class="exp-company">Alkimy</h3>
+            <div class="exp-role">Sales Business Developer – Closing High Ticket</div>
+            <p class="exp-desc">
+              Closing de programmes d'accompagnement premium auprès d'entrepreneurs et porteurs de projets : entretiens, qualification, gestion des objections, vente consultative SPIN Selling de la découverte à la décision.
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+          <!-- Meyers Assurances -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="formation commercial" data-exp-id="meyers" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Meyers Assurances">
+            <div class="exp-badge-row">
+              <span class="exp-period">2024 — 2026</span>
+              <span class="exp-tag">Formation &amp; L&amp;D</span>
+            </div>
+            <h3 class="exp-company">Meyers Assurances</h3>
+            <div class="exp-role">Responsable Formation</div>
+            <p class="exp-desc">
+              Pilotage de l'ingénierie de formation pour les équipes commerciales. Formation de formateurs, coaching terrain des managers et conception de parcours, référentiels de compétences et outils d'évaluation.
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+          <!-- OLM Assurances -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="management formation commercial" data-exp-id="olm" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez OLM Assurances">
+            <div class="exp-badge-row">
+              <span class="exp-period">2023 — 2024</span>
+              <span class="exp-tag">Management &amp; Vente</span>
+            </div>
+            <h3 class="exp-company">OLM Assurances</h3>
+            <div class="exp-role">Manager</div>
+            <p class="exp-desc">
+              Pilotage de la performance d'un plateau de vente. Management et coaching d'équipes. Formations produits et techniques de vente. Plans d'action, suivi des KPI et reporting direction.
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+          <!-- Inveko -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="formation digital" data-exp-id="inveko" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Inveko">
+            <div class="exp-badge-row">
+              <span class="exp-period">2021 — 2022</span>
+              <span class="exp-tag">Ingénierie Formation</span>
+            </div>
+            <h3 class="exp-company">Inveko</h3>
+            <div class="exp-role">Responsable Formation</div>
+            <p class="exp-desc">
+              Pilotage stratégique et opérationnel du département formation. Management des équipes pédagogiques. Modules e-learning et gestion du LMS. Suivi des KPI, plans d'action et audits internes (conformité réglementaire courtage).
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+          <!-- Courtalys Assurances -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="management formation" data-exp-id="courtalys" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Courtalys Assurances">
+            <div class="exp-badge-row">
+              <span class="exp-period">2019 — 2020</span>
+              <span class="exp-tag">RH &amp; Formation</span>
+            </div>
+            <h3 class="exp-company">Courtalys Assurances</h3>
+            <div class="exp-role">Responsable Formation &amp; RH</div>
+            <p class="exp-desc">
+              Pilotage du recrutement et du plan de formation. Développement de la marque employeur. Déploiement de la politique RH (droit du travail, carrières). Accompagnement des managers et suivi des indicateurs de performance.
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+          <!-- Freelance By Sou -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="formation management commercial" data-exp-id="freelance" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience Formations &amp; Coaching By Sou">
+            <div class="exp-badge-row">
+              <span class="exp-period">2015 — 2019</span>
+              <span class="exp-tag">Projet &amp; Coaching</span>
+            </div>
+            <h3 class="exp-company">Formations &amp; Coaching By Sou · Freelance</h3>
+            <div class="exp-role">Responsable Projet &amp; Formatrice</div>
+            <p class="exp-desc">
+              Création et pilotage du projet « Formations &amp; Coaching By Sou ». Gestion d'un portefeuille clients (prospection, négociation, fidélisation). Formations, coaching linguistique, techniques de vente et relation client.
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+          <!-- RPCM -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="management formation commercial" data-exp-id="rpcm" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez RPCM">
+            <div class="exp-badge-row">
+              <span class="exp-period">2012 — 2015</span>
+              <span class="exp-tag">Management Télécom</span>
+            </div>
+            <h3 class="exp-company">Right Place Call Morocco (RPCM)</h3>
+            <div class="exp-role">Manager / Formatrice</div>
+            <p class="exp-desc">
+              Pilotage de projets (stratégie, plan d'action, suivi KPI). Management de superviseurs et commerciaux. Formations initiales et continues en techniques de vente, coaching terrain et redressement des performances. Maîtrise CRM ViciDial.
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+          <!-- Intelcia -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="digital commercial" data-exp-id="intelcia" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Intelcia">
+            <div class="exp-badge-row">
+              <span class="exp-period">2011 — 2012</span>
+              <span class="exp-tag">Digital &amp; Ads</span>
+            </div>
+            <h3 class="exp-company">Intelcia</h3>
+            <div class="exp-role">Experte certifiée Google Ads</div>
+            <p class="exp-desc">
+              Développement commercial et publicité en ligne. Création et optimisation de campagnes Google Ads performantes. Analyse ROI et conseil stratégique auprès des comptes clients.
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+          <!-- MIS MEP Direct -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="commercial" data-exp-id="mismed" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez MIS MEP Direct">
+            <div class="exp-badge-row">
+              <span class="exp-period">2010 — 2011</span>
+              <span class="exp-tag">Vente Directe</span>
+            </div>
+            <h3 class="exp-company">MIS MEP Direct</h3>
+            <div class="exp-role">Conseillère Commerciale</div>
+            <p class="exp-desc">
+              Vente directe par téléphone de contrats santé. Analyse des besoins, comparaison de +500 formules multi-assureurs. Suivi et fidélisation du portefeuille clients.
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+          <!-- Majorel / Phone Group -->
+          <div class="glass-panel experience-card reveal-on-scroll" data-category="commercial" data-exp-id="majorel" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Majorel / Phone Group">
+            <div class="exp-badge-row">
+              <span class="exp-period">2008 — 2010</span>
+              <span class="exp-tag">Relation Client</span>
+            </div>
+            <h3 class="exp-company">Majorel / Phone Group</h3>
+            <div class="exp-role">Téléconseillère – Orange France</div>
+            <p class="exp-desc">
+              Service client Orange Mobile — 3 activités : Relation Client (accueil, conseil, fidélisation), SAV (réclamations, résolution d'incidents), Support Technique N2 (coordination avec les équipes expertes).
+            </p>
+            <div class="exp-footer">
+              <span>Voir la fiche détaillée</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         04 — MON PARCOURS (ESCALIER DESCENDANT)
          ====================================================================== -->
     <section id="parcours" class="parcours-section section-padding" aria-labelledby="parcours-title">
       <div class="container">
         
         <div class="section-header center">
-          <span class="section-tag">03 — Mon Parcours</span>
+          <span class="section-tag">04 — Mon Parcours</span>
           <h2 id="parcours-title" class="section-title">
-            Une ascension d'expertise en <span class="gold-text">10 marches 3D</span>
+            Une ascension d'expertise en <span class="gold-text">10 étapes</span>
           </h2>
           <p class="section-subtitle">
-            De la vente terrain au closing stratégique et aux technologies IA, plus de 15 ans d'évolution structurée sous forme d'escalier 3D descendant.
+            De la vente terrain au closing stratégique et aux technologies IA, plus de 15 ans d'évolution structurée sous forme d'escalier descendant.
           </p>
 
           <!-- Contrôles interactifs de l'escalier -->
           <div class="stair-controls">
             <button type="button" class="btn btn-secondary stair-replay-btn" id="stair-replay-trigger" aria-label="Rejouer l'animation de descente de l'escalier">
               <span class="stair-replay-icon" aria-hidden="true">↺</span>
-              <span>Rejouer la descente 3D</span>
+              <span>Rejouer la descente</span>
             </button>
             <div class="stair-meta-counter">
               <span class="stair-circle-bullet">●</span>
@@ -250,7 +453,7 @@
           </div>
         </div>
 
-        <!-- Scène d'Escalier 3D -->
+        <!-- Scène d'Escalier -->
         <div class="staircase-3d-stage" id="staircase-stage">
           
           <!-- Toile SVG pour le dessin vectoriel animé des marches -->
@@ -278,7 +481,7 @@
             <circle id="stair-tracer" class="stair-tracer" cx="-100" cy="-100" r="8" />
           </svg>
 
-          <!-- Liste des 10 Marches 3D en cascade descendante -->
+          <!-- Liste des 10 Marches en cascade descendante -->
           <div class="stair-steps-grid" id="stair-steps-grid">
             
             <!-- Marche 01 -->
@@ -488,13 +691,13 @@
       </div>
     </section>
 <!-- ======================================================================
-         04 — MES CASQUETTES (EXPÉRIENCE 3D CENTRALE)
+         05 — MES CASQUETTES (EXPÉRIENCE CENTRALE)
          ====================================================================== -->
     <section id="casquettes" class="casquettes-section section-padding" aria-labelledby="casquettes-title">
       <div class="container">
         
         <div class="section-header center">
-          <span class="section-tag">04 — Mes Casquettes</span>
+          <span class="section-tag">05 — Mes Casquettes</span>
           <h2 id="casquettes-title" class="section-title">
             Une professionnelle. <span class="gold-text">Plusieurs perspectives.</span>
           </h2>
@@ -505,7 +708,7 @@
 
         <div class="casquettes-layout">
           
-          <!-- Visualisation 3D Interactive -->
+          <!-- Visualisation Interactive -->
           <div class="casquettes-3d-wrapper" id="casquettes-canvas-container">
             <!-- Three.js s'injecte ici -->
           </div>
@@ -641,13 +844,13 @@
     </section>
 
     <!-- ======================================================================
-         05 — MES EXPERTISES (GRANDES FAMILLES DE COMPÉTENCES)
+         06 — MES EXPERTISES (GRANDES FAMILLES DE COMPÉTENCES)
          ====================================================================== -->
     <section id="expertises" class="expertises-section section-padding" aria-labelledby="expertises-title">
       <div class="container">
         
         <div class="section-header">
-          <span class="section-tag">05 — Mes Expertises</span>
+          <span class="section-tag">06 — Mes Expertises</span>
           <h2 id="expertises-title" class="section-title">
             Un savoir-faire pluridisciplinaire <span class="gold-text">organisé</span>
           </h2>
@@ -808,208 +1011,7 @@
       </div>
     </section>
 
-    <!-- ======================================================================
-         06 — MES EXPÉRIENCES (VUE DÉTAILLÉE INTERACTIVE)
-         ====================================================================== -->
-    <section id="experiences" class="experiences-section section-padding" aria-labelledby="experiences-title">
-      <div class="container">
-        
-        <div class="section-header">
-          <span class="section-tag">06 — Mes Expériences</span>
-          <h2 id="experiences-title" class="section-title">
-            Un parcours riche et <span class="gold-text">diversifié</span>
-          </h2>
-          <p class="section-subtitle">
-            Cliquez sur une expérience pour ouvrir sa fiche détaillée : contexte, missions opérationnelles, compétences mobilisées et complémentarité.
-          </p>
-        </div>
-
-        <!-- Filtres par Casquette -->
-        <div class="experiences-filter" role="tablist" aria-label="Filtrer les expériences">
-          <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">Toutes les expériences</button>
-          <button class="filter-btn" data-filter="formation" role="tab" aria-selected="false">Formation & Pédagogie</button>
-          <button class="filter-btn" data-filter="commercial" role="tab" aria-selected="false">Commercial & Vente</button>
-          <button class="filter-btn" data-filter="management" role="tab" aria-selected="false">Management & RH</button>
-          <button class="filter-btn" data-filter="digital" role="tab" aria-selected="false">Digital & IA</button>
-        </div>
-
-        <!-- Grille de Cartes d'Expériences -->
-        <div class="experiences-grid">
-
-          <!-- Alkimy -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="commercial" data-exp-id="alkimy" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Alkimy">
-            <div class="exp-badge-row">
-              <span class="exp-period">2026 — Aujourd'hui</span>
-              <span class="exp-tag">Commercial</span>
-            </div>
-            <h3 class="exp-company">Alkimy</h3>
-            <div class="exp-role">Sales Business Developer – Closing High Ticket</div>
-            <p class="exp-desc">
-              Closing de programmes d'accompagnement premium auprès d'entrepreneurs et porteurs de projets : entretiens, qualification, gestion des objections, vente consultative SPIN Selling de la découverte à la décision.
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-          <!-- Meyers Assurances -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="formation commercial" data-exp-id="meyers" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Meyers Assurances">
-            <div class="exp-badge-row">
-              <span class="exp-period">2024 — 2026</span>
-              <span class="exp-tag">Formation &amp; L&amp;D</span>
-            </div>
-            <h3 class="exp-company">Meyers Assurances</h3>
-            <div class="exp-role">Responsable Formation</div>
-            <p class="exp-desc">
-              Pilotage de l'ingénierie de formation pour les équipes commerciales. Formation de formateurs, coaching terrain des managers et conception de parcours, référentiels de compétences et outils d'évaluation.
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-          <!-- OLM Assurances -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="management formation commercial" data-exp-id="olm" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez OLM Assurances">
-            <div class="exp-badge-row">
-              <span class="exp-period">2023 — 2024</span>
-              <span class="exp-tag">Management &amp; Vente</span>
-            </div>
-            <h3 class="exp-company">OLM Assurances</h3>
-            <div class="exp-role">Manager</div>
-            <p class="exp-desc">
-              Pilotage de la performance d'un plateau de vente. Management et coaching d'équipes. Formations produits et techniques de vente. Plans d'action, suivi des KPI et reporting direction.
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-          <!-- Inveko -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="formation digital" data-exp-id="inveko" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Inveko">
-            <div class="exp-badge-row">
-              <span class="exp-period">2021 — 2022</span>
-              <span class="exp-tag">Ingénierie Formation</span>
-            </div>
-            <h3 class="exp-company">Inveko</h3>
-            <div class="exp-role">Responsable Formation</div>
-            <p class="exp-desc">
-              Pilotage stratégique et opérationnel du département formation. Management des équipes pédagogiques. Modules e-learning et gestion du LMS. Suivi des KPI, plans d'action et audits internes (conformité réglementaire courtage).
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-          <!-- Courtalys Assurances -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="management formation" data-exp-id="courtalys" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Courtalys Assurances">
-            <div class="exp-badge-row">
-              <span class="exp-period">2019 — 2020</span>
-              <span class="exp-tag">RH &amp; Formation</span>
-            </div>
-            <h3 class="exp-company">Courtalys Assurances</h3>
-            <div class="exp-role">Responsable Formation &amp; RH</div>
-            <p class="exp-desc">
-              Pilotage du recrutement et du plan de formation. Développement de la marque employeur. Déploiement de la politique RH (droit du travail, carrières). Accompagnement des managers et suivi des indicateurs de performance.
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-          <!-- Freelance By Sou -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="formation management commercial" data-exp-id="freelance" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience Formations &amp; Coaching By Sou">
-            <div class="exp-badge-row">
-              <span class="exp-period">2015 — 2019</span>
-              <span class="exp-tag">Projet &amp; Coaching</span>
-            </div>
-            <h3 class="exp-company">Formations &amp; Coaching By Sou · Freelance</h3>
-            <div class="exp-role">Responsable Projet &amp; Formatrice</div>
-            <p class="exp-desc">
-              Création et pilotage du projet « Formations &amp; Coaching By Sou ». Gestion d'un portefeuille clients (prospection, négociation, fidélisation). Formations, coaching linguistique, techniques de vente et relation client.
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-          <!-- RPCM -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="management formation commercial" data-exp-id="rpcm" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez RPCM">
-            <div class="exp-badge-row">
-              <span class="exp-period">2012 — 2015</span>
-              <span class="exp-tag">Management Télécom</span>
-            </div>
-            <h3 class="exp-company">Right Place Call Morocco (RPCM)</h3>
-            <div class="exp-role">Manager / Formatrice</div>
-            <p class="exp-desc">
-              Pilotage de projets (stratégie, plan d'action, suivi KPI). Management de superviseurs et commerciaux. Formations initiales et continues en techniques de vente, coaching terrain et redressement des performances. Maîtrise CRM ViciDial.
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-          <!-- Intelcia -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="digital commercial" data-exp-id="intelcia" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Intelcia">
-            <div class="exp-badge-row">
-              <span class="exp-period">2011 — 2012</span>
-              <span class="exp-tag">Digital &amp; Ads</span>
-            </div>
-            <h3 class="exp-company">Intelcia</h3>
-            <div class="exp-role">Experte certifiée Google Ads</div>
-            <p class="exp-desc">
-              Développement commercial et publicité en ligne. Création et optimisation de campagnes Google Ads performantes. Analyse ROI et conseil stratégique auprès des comptes clients.
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-          <!-- MIS MEP Direct -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="commercial" data-exp-id="mismed" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez MIS MEP Direct">
-            <div class="exp-badge-row">
-              <span class="exp-period">2010 — 2011</span>
-              <span class="exp-tag">Vente Directe</span>
-            </div>
-            <h3 class="exp-company">MIS MEP Direct</h3>
-            <div class="exp-role">Conseillère Commerciale</div>
-            <p class="exp-desc">
-              Vente directe par téléphone de contrats santé. Analyse des besoins, comparaison de +500 formules multi-assureurs. Suivi et fidélisation du portefeuille clients.
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-          <!-- Majorel / Phone Group -->
-          <div class="glass-panel experience-card reveal-on-scroll" data-category="commercial" data-exp-id="majorel" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détails de l'expérience chez Majorel / Phone Group">
-            <div class="exp-badge-row">
-              <span class="exp-period">2008 — 2010</span>
-              <span class="exp-tag">Relation Client</span>
-            </div>
-            <h3 class="exp-company">Majorel / Phone Group</h3>
-            <div class="exp-role">Téléconseillère – Orange France</div>
-            <p class="exp-desc">
-              Service client Orange Mobile — 3 activités : Relation Client (accueil, conseil, fidélisation), SAV (réclamations, résolution d'incidents), Support Technique N2 (coordination avec les équipes expertes).
-            </p>
-            <div class="exp-footer">
-              <span>Voir la fiche détaillée</span>
-              <span aria-hidden="true">→</span>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
+    
 
     <!-- ======================================================================
          07 — EXTRAITS DE FORMATION
@@ -1338,9 +1340,9 @@
       document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
     }
   </script>
-  <!-- 2. Constellation 3D des Casquettes -->
-  <script src="three-constellation.js?v=20260927-4"></script>
+  <!-- 2. Constellation des Casquettes -->
+  <script src="three-constellation.js?v=20260927-5"></script>
   <!-- 3. Interactions et Logique Applicative -->
-  <script src="main.js?v=20260927-4"></script>
+  <script src="main.js?v=20260927-5"></script>
 </body>
 </html>

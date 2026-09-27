@@ -222,7 +222,7 @@
       canvasElement.style.width = '100%';
       canvasElement.style.height = '100%';
       canvasElement.style.display = 'block';
-      canvasElement.setAttribute('aria-label', 'Constellation 3D interactive représentant les 6 casquettes de Soukaina Belhouk');
+      canvasElement.setAttribute('aria-label', 'Constellation interactive représentant les 6 casquettes de Soukaina Belhouk');
 
       container.innerHTML = '';
       container.appendChild(canvasElement);
