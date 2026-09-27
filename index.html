@@ -1029,27 +1029,27 @@
         <div class="training-videos-grid">
           <article class="glass-panel training-video-card reveal-on-scroll">
             <div class="training-video-frame">
-              <video class="training-video" controls preload="metadata" playsinline aria-label="Extrait de formation, séquence 1">
+              <video class="training-video" autoplay muted loop playsinline controls preload="auto" aria-label="Extrait de formation, séquence 1">
                 <source src="assets/formation-sequence-01.mp4" type="video/mp4">
                 Votre navigateur ne prend pas en charge la lecture vidéo.
               </video>
             </div>
             <div class="training-video-meta">
               <span class="training-video-index" aria-hidden="true">01</span>
-              <h3 class="training-video-title">Extrait de formation</h3>
+              <h3 class="training-video-title">Extrait de formation — Séquence 1</h3>
             </div>
           </article>
 
           <article class="glass-panel training-video-card reveal-on-scroll">
             <div class="training-video-frame">
-              <video class="training-video" controls preload="metadata" playsinline aria-label="Extrait de formation, séquence 2">
+              <video class="training-video" autoplay muted loop playsinline controls preload="auto" aria-label="Extrait de formation, séquence 2">
                 <source src="assets/formation-sequence-02.mp4" type="video/mp4">
                 Votre navigateur ne prend pas en charge la lecture vidéo.
               </video>
             </div>
             <div class="training-video-meta">
               <span class="training-video-index" aria-hidden="true">02</span>
-              <h3 class="training-video-title">Extrait de formation</h3>
+              <h3 class="training-video-title">Extrait de formation — Séquence 2</h3>
             </div>
           </article>
         </div>
@@ -1331,13 +1331,11 @@
   </footer>
 
   <!-- Scripts -->
-  <!-- 1. Three.js Engine (CDN Cloudflare + Secours local) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- 1. Three.js Engine (Local d'abord pour zéro dépendance réseau, CDN en secours) -->
+  <script src="assets/three.min.js"></script>
   <script>
     if (typeof THREE === 'undefined') {
-      const s = document.createElement('script');
-      s.src = 'assets/three.min.js';
-      document.head.appendChild(s);
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
     }
   </script>
   <!-- 2. Constellation 3D des Casquettes -->

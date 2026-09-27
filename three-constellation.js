@@ -346,23 +346,29 @@
     const h = container.clientHeight || w || 550;
     width = w;
     height = h;
-    camera.aspect = width / height;
+    const aspect = width / height;
+    camera.aspect = aspect;
+    camera.position.z = aspect < 1 ? (15 / aspect) * 0.85 : 15;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
     renderer.render(scene, camera);
   }
 
   function setupObserver() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        isVisible = entry.isIntersecting;
-        if (isVisible) {
-          onWindowResize();
-        }
-      });
-    }, { threshold: 0.02 });
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            onWindowResize();
+          }
+        });
+      }, { threshold: 0.05 });
+      observer.observe(container);
+    }
 
-    observer.observe(container);
+    document.addEventListener('visibilitychange', () => {
+      isVisible = !document.hidden;
+    });
   }
 
   // Synchronisation avec les cartes HTML de la section
@@ -397,7 +403,7 @@
   function animate() {
     requestAnimationFrame(animate);
 
-    if (!isVisible) return;
+    if (document.hidden) return;
 
     // Rotation douce
     if (!prefersReducedMotion && !isHovered) {
@@ -420,8 +426,18 @@
 
   // Démarrage lorsque le DOM est prêt
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
+      setTimeout(onWindowResize, 300);
+      setTimeout(onWindowResize, 1000);
+    });
   } else {
     init();
+    setTimeout(onWindowResize, 300);
+    setTimeout(onWindowResize, 1000);
   }
+
+  window.addEventListener('load', () => {
+    setTimeout(onWindowResize, 200);
+  });
 })();
