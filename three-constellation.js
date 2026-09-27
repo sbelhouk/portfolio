@@ -41,8 +41,7 @@
   let targetRotationX = 0, targetRotationY = 0;
   let isHovered = false;
   let activeRoleIndex = 0;
-  let isVisible = false;
-  let animationFrameId = null;
+  let isVisible = true;
 
   // Raycasting
   const raycaster = new THREE.Raycaster();
@@ -253,11 +252,12 @@
     // Initialiser l'état actif
     updateActiveRole(0, false);
 
-    // La boucle démarre quand la constellation entre dans le champ visible.
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) stopAnimation();
-      else startAnimation();
-    });
+    // Ajustement des dimensions et premier rendu immédiat garanti
+    onWindowResize();
+    renderer.render(scene, camera);
+
+    // Démarrer la boucle
+    animate();
   }
 
   function setupEvents() {
@@ -333,8 +333,6 @@
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         isVisible = entry.isIntersecting;
-        if (isVisible) startAnimation();
-        else stopAnimation();
       });
     }, { threshold: 0.1 });
 
@@ -370,26 +368,14 @@
     }
   }
 
-  function startAnimation() {
-    if (!animationFrameId && isVisible && !document.hidden) {
-      animationFrameId = requestAnimationFrame(animate);
-    }
-  }
-
-  function stopAnimation() {
-    if (animationFrameId) {
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = null;
-    }
-  }
-
   function animate() {
-    animationFrameId = null;
-    if (!isVisible || document.hidden) return;
+    requestAnimationFrame(animate);
 
-    // Rotation douce, volontairement lente pour garder une présence discrète.
+    if (!isVisible) return;
+
+    // Rotation douce
     if (!prefersReducedMotion && !isHovered) {
-      constellationGroup.rotation.y += 0.0018;
+      constellationGroup.rotation.y += 0.0035;
     }
 
     // Amortissement de la rotation ciblée
@@ -404,7 +390,6 @@
     }
 
     renderer.render(scene, camera);
-    animationFrameId = requestAnimationFrame(animate);
   }
 
   // Démarrage lorsque le DOM est prêt
