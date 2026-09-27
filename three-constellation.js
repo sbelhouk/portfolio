@@ -25,6 +25,7 @@
   let connectionLines;
   let particleSystem;
   let constellationGroup;
+  let pointerStart = null;
 
   let width = 550;
   let height = 550;
@@ -55,12 +56,8 @@
       roundRect(ctx, 36, 18, 440, 92, 46);
       ctx.fill();
       ctx.stroke();
-
       ctx.font = 'bold 36px "Fraunces", Georgia, serif';
       ctx.fillStyle = '#FFFFFF';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(text, 256, 64);
     } else {
       ctx.fillStyle = 'rgba(21, 31, 52, 0.88)';
       ctx.strokeStyle = 'rgba(212, 175, 55, 0.65)';
@@ -68,13 +65,12 @@
       roundRect(ctx, 20, 22, 472, 84, 20);
       ctx.fill();
       ctx.stroke();
-
       ctx.font = 'bold 28px "Plus Jakarta Sans", sans-serif';
       ctx.fillStyle = '#F5E8C7';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(text, 256, 64);
     }
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 256, 64);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
@@ -129,7 +125,7 @@
               </feMerge>
             </filter>
           </defs>
-          <g id="svg-constellation-rotator" style="animation: spinConstellation 50s linear infinite; transform-origin: 0 0;">
+          <g id="svg-constellation-rotator" style="animation: spinConstellation 110s linear infinite; transform-origin: 0 0;">
             <!-- Lignes de liaison -->
             ${roles.map((r, i) => {
               const ang = (i / roles.length) * Math.PI * 2;
@@ -145,11 +141,11 @@
               const x = Math.cos(ang) * 190;
               const y = Math.sin(ang) * 190;
               return `
-                <g class="svg-node" data-role-idx="${i}" style="cursor:pointer;" transform="translate(${x},${y})">
-                  <circle cx="0" cy="0" r="18" fill="#151F34" stroke="#D4AF37" stroke-width="2.5" filter="url(#fbGlow)" />
-                  <circle cx="0" cy="0" r="8" fill="#F5E8C7" />
-                  <rect x="-70" y="24" width="140" height="26" rx="13" fill="rgba(14,21,36,0.9)" stroke="rgba(212,175,55,0.6)" stroke-width="1" />
-                  <text x="0" y="41" text-anchor="middle" fill="#F5E8C7" font-size="10" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700" letter-spacing="1">${r.name}</text>
+                <g class="svg-node" data-role-idx="${i}" tabindex="0" role="button" aria-label="Explorer le rôle ${r.name}" style="cursor:pointer;outline:none;" transform="translate(${x},${y})">
+                  <circle cx="0" cy="0" r="17" fill="#151F34" stroke="#D4AF37" stroke-width="2" filter="url(#fbGlow)" />
+                  <circle cx="0" cy="0" r="6" fill="#F5E8C7" />
+                  <rect x="-76" y="23" width="152" height="25" rx="12.5" fill="rgba(14,21,36,0.96)" stroke="rgba(212,175,55,0.55)" stroke-width="1" />
+                  <text x="0" y="40" text-anchor="middle" fill="#F5E8C7" font-size="9" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700" letter-spacing="0.7">${r.name}</text>
                 </g>
               `;
             }).join('')}
@@ -166,19 +162,27 @@
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
-        .svg-node:hover circle:first-child {
+        .svg-node:hover circle:first-child, .svg-node:focus-visible circle:first-child {
           stroke: #FFFFFF;
-          stroke-width: 3.5;
+          stroke-width: 3;
         }
+        @media (prefers-reduced-motion: reduce) { #svg-constellation-rotator { animation: none !important; } }
       </style>
     `;
 
     container.querySelectorAll('.svg-node').forEach(node => {
-      node.addEventListener('click', (e) => {
+      const selectRole = () => {
         const idx = parseInt(node.getAttribute('data-role-idx'), 10);
         if (!isNaN(idx)) {
           if (window.onRoleSelectedIn3D) window.onRoleSelectedIn3D(idx);
           if (window.setActiveRoleFromCard) window.setActiveRoleFromCard(idx);
+        }
+      };
+      node.addEventListener('click', selectRole);
+      node.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          selectRole();
         }
       });
     });
@@ -248,19 +252,19 @@
       scene.add(backLight);
 
       // 1. Noyau Central : SOUKAINA
-      const centerGeo = new THREE.SphereGeometry(1.2, 32, 32);
+      const centerGeo = new THREE.SphereGeometry(1.1, 32, 32);
       const centerMat = new THREE.MeshStandardMaterial({
         color: 0xD4AF37,
         metalness: 0.85,
-        roughness: 0.2,
+        roughness: 0.25,
         emissive: 0xAA8222,
-        emissiveIntensity: 0.7
+        emissiveIntensity: 0.6
       });
       centerMesh = new THREE.Mesh(centerGeo, centerMat);
       constellationGroup.add(centerMesh);
 
       // Anneau orbital central
-      const ringGeo = new THREE.RingGeometry(1.5, 1.62, 64);
+      const ringGeo = new THREE.RingGeometry(1.35, 1.45, 64);
       const ringMat = new THREE.MeshBasicMaterial({
         color: 0xF3E5AB,
         side: THREE.DoubleSide,
@@ -273,7 +277,7 @@
 
       // Label central
       centerSprite = createTextSprite('SOUKAINA', true);
-      centerSprite.position.set(0, -1.95, 0);
+      centerSprite.position.set(0, -1.8, 0);
       constellationGroup.add(centerSprite);
 
       // 2. Les 6 Satellites (Casquettes)
@@ -283,17 +287,17 @@
       roles.forEach((role, idx) => {
         const angle = (idx / roles.length) * Math.PI * 2;
         const x = Math.cos(angle) * orbitRadius;
-        const y = Math.sin(angle) * (orbitRadius * 0.72);
-        const z = Math.sin(angle * 2) * 1.5;
+        const y = Math.sin(angle) * (orbitRadius * 0.75);
+        const z = Math.sin(angle * 2) * 1.4;
 
         // Nœud 3D
-        const nodeGeo = new THREE.SphereGeometry(0.55, 24, 24);
+        const nodeGeo = new THREE.SphereGeometry(0.52, 24, 24);
         const nodeMat = new THREE.MeshStandardMaterial({
           color: role.color,
           metalness: 0.75,
           roughness: 0.25,
           emissive: role.color,
-          emissiveIntensity: 0.5
+          emissiveIntensity: 0.35
         });
         const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
         nodeMesh.position.set(x, y, z);
@@ -312,13 +316,14 @@
         linePositions.push(0, 0, 0);
         linePositions.push(x, y, z);
 
-        // Liaison vers satellite suivant
         const nextAngle = ((idx + 1) / roles.length) * Math.PI * 2;
-        const nx = Math.cos(nextAngle) * orbitRadius;
-        const ny = Math.sin(nextAngle) * (orbitRadius * 0.72);
-        const nz = Math.sin(nextAngle * 2) * 1.5;
         linePositions.push(x, y, z);
-        linePositions.push(nx, ny, nz);
+        linePositions.push(
+          Math.cos(nextAngle) * orbitRadius,
+          Math.sin(nextAngle) * (orbitRadius * 0.75),
+          Math.sin(nextAngle * 2) * 1.4
+        );
+
       });
 
       // Lignes dorées
@@ -327,13 +332,13 @@
       const lineMat = new THREE.LineBasicMaterial({
         color: 0xD4AF37,
         transparent: true,
-        opacity: 0.45
+        opacity: 0.35
       });
       connectionLines = new THREE.LineSegments(lineGeo, lineMat);
       constellationGroup.add(connectionLines);
 
       // Particules flottantes
-      const particleCount = 140;
+      const particleCount = 120;
       const particlePositions = new Float32Array(particleCount * 3);
       for (let i = 0; i < particleCount * 3; i += 3) {
         particlePositions[i] = (Math.random() - 0.5) * 16;
@@ -344,9 +349,9 @@
       particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
       const particleMat = new THREE.PointsMaterial({
         color: 0xF5E8C7,
-        size: 0.09,
+        size: 0.08,
         transparent: true,
-        opacity: 0.65
+        opacity: 0.6
       });
       particleSystem = new THREE.Points(particleGeo, particleMat);
       constellationGroup.add(particleSystem);
@@ -374,57 +379,60 @@
 
   function setupEvents() {
     const el = renderer.domElement;
+    el.style.touchAction = 'pan-y';
 
-    // Souris Desktop
-    el.addEventListener('mousemove', (e) => {
+    const updatePointer = (event) => {
       const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
       mouse.x = (x / rect.width) * 2 - 1;
       mouse.y = -(y / rect.height) * 2 + 1;
+      targetTiltY = ((x / rect.width) - 0.5) * 0.45;
+      targetTiltX = ((y / rect.height) - 0.5) * 0.3;
+      return { x: event.clientX, y: event.clientY };
+    };
 
-      targetTiltY = ((x / rect.width) - 0.5) * 0.9;
-      targetTiltX = ((y / rect.height) - 0.5) * 0.6;
+    el.addEventListener('pointerdown', (event) => {
+      if (event.button !== undefined && event.button !== 0) return;
+      pointerStart = updatePointer(event);
+      isDragging = false;
+      el.setPointerCapture(event.pointerId);
     });
 
-    el.addEventListener('mouseleave', () => {
-      targetTiltX = 0;
-      targetTiltY = 0;
-      mouse.x = -999;
-      mouse.y = -999;
-    });
-
-    // Touch Mobile (Drag rotation)
-    let touchStartX = 0;
-    el.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        isDragging = true;
-        touchStartX = e.touches[0].clientX;
-      }
-    }, { passive: true });
-
-    el.addEventListener('touchend', () => { isDragging = false; }, { passive: true });
-
-    el.addEventListener('touchmove', (e) => {
-      if (isDragging && e.touches.length === 1) {
-        const deltaX = (e.touches[0].clientX - touchStartX) * 0.012;
-        userDragOffset += deltaX;
-        touchStartX = e.touches[0].clientX;
-      }
-    }, { passive: true });
-
-    // Clic / Tap de sélection
-    el.addEventListener('click', () => {
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects([...nodeMeshes, ...nodeSprites]);
-
-      if (intersects.length > 0) {
-        const target = intersects[0].object;
-        const idx = target.userData.index;
-        if (typeof idx === 'number') {
-          updateActiveRole(idx, true);
+    el.addEventListener('pointermove', (event) => {
+      const position = updatePointer(event);
+      if (pointerStart && event.buttons) {
+        const dx = position.x - pointerStart.x;
+        const dy = position.y - pointerStart.y;
+        if (Math.abs(dx) + Math.abs(dy) > 5) isDragging = true;
+        if (isDragging) {
+          userDragOffset += dx * 0.006;
+          targetTiltX = Math.max(-0.35, Math.min(0.35, targetTiltX + dy * 0.001));
+          pointerStart = position;
         }
+      }
+    });
+
+    el.addEventListener('pointerup', () => {
+      if (!isDragging && mouse.x > -1 && mouse.x < 1 && mouse.y > -1 && mouse.y < 1) {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects([...nodeMeshes, ...nodeSprites]);
+        if (intersects.length) updateActiveRole(intersects[0].object.userData.index, true);
+      }
+      pointerStart = null;
+      isDragging = false;
+    });
+
+    el.addEventListener('pointercancel', () => {
+      pointerStart = null;
+      isDragging = false;
+    });
+
+    el.addEventListener('pointerleave', () => {
+      if (!pointerStart) {
+        targetTiltX = 0;
+        targetTiltY = 0;
+        mouse.set(-999, -999);
       }
     });
 
@@ -477,7 +485,7 @@
 
     // Rotation continue ininterrompue
     if (!prefersReducedMotion) {
-      baseRotationY += 0.0045;
+      baseRotationY += 0.0018;
     }
 
     // Amortissement fluide des tilts et focus
@@ -493,9 +501,9 @@
     // Pulsation douce du noyau
     if (!prefersReducedMotion && centerMesh) {
       const time = Date.now() * 0.0025;
-      const scale = 1 + Math.sin(time) * 0.05;
+      const scale = 1 + Math.sin(time) * 0.035;
       centerMesh.scale.set(scale, scale, scale);
-      if (ringMesh) ringMesh.rotation.z += 0.004;
+      if (ringMesh) ringMesh.rotation.z += 0.0018;
     }
 
     if (renderer && scene && camera) {
