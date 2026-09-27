@@ -1143,6 +1143,7 @@ a {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
+  min-height: 420px;
   max-width: 650px;
   margin: 0 auto;
   border-radius: var(--radius-lg);

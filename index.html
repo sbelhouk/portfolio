@@ -1331,11 +1331,13 @@
   </footer>
 
   <!-- Scripts -->
-  <!-- 1. Three.js local avec CDN en secours -->
-  <script src="assets/three.min.js"></script>
+  <!-- 1. Three.js Engine (CDN Cloudflare + Secours local) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     if (typeof THREE === 'undefined') {
-      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+      const s = document.createElement('script');
+      s.src = 'assets/three.min.js';
+      document.head.appendChild(s);
     }
   </script>
   <!-- 2. Constellation 3D des Casquettes -->
