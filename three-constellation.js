@@ -42,6 +42,7 @@
   let isHovered = false;
   let activeRoleIndex = 0;
   let isVisible = false;
+  let animationFrameId = null;
 
   // Raycasting
   const raycaster = new THREE.Raycaster();
@@ -252,8 +253,11 @@
     // Initialiser l'état actif
     updateActiveRole(0, false);
 
-    // Démarrer la boucle
-    animate();
+    // La boucle démarre quand la constellation entre dans le champ visible.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAnimation();
+      else startAnimation();
+    });
   }
 
   function setupEvents() {
@@ -329,6 +333,8 @@
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         isVisible = entry.isIntersecting;
+        if (isVisible) startAnimation();
+        else stopAnimation();
       });
     }, { threshold: 0.1 });
 
@@ -364,14 +370,26 @@
     }
   }
 
+  function startAnimation() {
+    if (!animationFrameId && isVisible && !document.hidden) {
+      animationFrameId = requestAnimationFrame(animate);
+    }
+  }
+
+  function stopAnimation() {
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+  }
+
   function animate() {
-    requestAnimationFrame(animate);
+    animationFrameId = null;
+    if (!isVisible || document.hidden) return;
 
-    if (!isVisible) return;
-
-    // Rotation douce
+    // Rotation douce, volontairement lente pour garder une présence discrète.
     if (!prefersReducedMotion && !isHovered) {
-      constellationGroup.rotation.y += 0.0035;
+      constellationGroup.rotation.y += 0.0018;
     }
 
     // Amortissement de la rotation ciblée
@@ -386,6 +404,7 @@
     }
 
     renderer.render(scene, camera);
+    animationFrameId = requestAnimationFrame(animate);
   }
 
   // Démarrage lorsque le DOM est prêt

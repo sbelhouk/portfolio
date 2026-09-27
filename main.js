@@ -113,6 +113,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========================================================================
   // 4. MES EXPÉRIENCES (FILTRAGE & VUE DÉTAILLÉE MODALE)
   // ========================================================================
+  const trainingVideos = document.querySelectorAll('.training-video');
+  trainingVideos.forEach(video => {
+    video.addEventListener('play', () => {
+      trainingVideos.forEach(otherVideo => {
+        if (otherVideo !== video) otherVideo.pause();
+      });
+    });
+  });
+
   const filterBtns = document.querySelectorAll('.filter-btn');
   const expCards = document.querySelectorAll('.experience-card');
 
@@ -141,18 +150,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const experienceDetails = {
     'meyers': {
       company: 'Meyers Assurances (Meyersa)',
-      role: 'Formatrice Commerciale',
-      period: '2024 — Présent',
+      role: 'Responsable Formation',
+      period: '2024 — 2026',
       location: 'Casablanca, Maroc',
-      context: 'Courtage en assurances — accompagnement de la montée en compétences des équipes commerciales.',
+      context: 'Courtage en assurances de personnes (santé et prévoyance) — direction de la formation.',
       missions: [
-        'Conception et déploiement de dispositifs complets de formation commerciale sur-mesure.',
-        'Animation de formations présentielles dynamiques et conduite de séances de coaching individuel terrain.',
-        'Accompagnement continu des équipes commerciales vers l’amélioration de leurs taux de conversion et résultats.',
-        'Création d’outils pédagogiques, argumentaires structurés et supports de formation adaptés aux spécificités de l’assurance.'
+        'Pilotage du dispositif et de l’ingénierie de formation pour les équipes commerciales et les télévendeurs.',
+        'Formation de formateurs et coaching terrain des managers.',
+        'Conception de parcours complets, de référentiels de compétences et d’outils d’évaluation de la performance.'
       ],
-      skills: ['Ingénierie pédagogique', 'Formation présentielle', 'Coaching individuel', 'Assurance santé & prévoyance', 'Création de supports'],
-      synergy: 'Casquettes mobilisées : Formatrice, Coach & Commerciale.'
+      skills: ['Ingénierie pédagogique', 'Formation de formateurs', 'Coaching terrain', 'Référentiels de compétences', 'Évaluation de la performance'],
+      synergy: 'Casquettes mobilisées : Responsable Formation, Formatrice & Coach.'
     },
         'alkimy': {
       company: 'Alkimiy',
