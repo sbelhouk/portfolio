@@ -1,16 +1,14 @@
 /**
  * Constellation 3D Interactive — Les Casquettes de Soukaina Belhouk
- * Développé avec Three.js
- * Optimisé pour la performance, l'accessibilité et la fluidité mobile
+ * Moteur Three.js avec fallback SVG interactif garanti
+ * Rendu continu haute performance, 100% responsive et fluide sur mobile
  */
 
 (function () {
   'use strict';
 
-  // Vérifier la préférence de réduction de mouvement
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Données des 6 casquettes
   const roles = [
     { id: 'commerciale', name: 'COMMERCIALE', subtitle: 'Comprendre avant de proposer', color: 0xE2CA8C, cardIndex: 0 },
     { id: 'formatrice', name: 'FORMATRICE', subtitle: 'Simplifier & transmettre', color: 0xF3E5AB, cardIndex: 1 },
@@ -20,9 +18,8 @@
     { id: 'digital-ia', name: 'DIGITAL & IA', subtitle: 'Outils modernes & impact', color: 0xD4AF37, cardIndex: 5 }
   ];
 
-  // Scène, Caméra, Renderer
   let scene, camera, renderer, container;
-  let centerMesh, centerSprite;
+  let centerMesh, centerSprite, ringMesh;
   const nodeMeshes = [];
   const nodeSprites = [];
   let connectionLines;
@@ -32,15 +29,16 @@
   let width = 550;
   let height = 550;
 
-  let mouseX = 0, mouseY = 0;
-  let targetRotationX = 0, targetRotationY = 0;
-  let isHovered = false;
+  let baseRotationY = 0;
+  let targetTiltX = 0, targetTiltY = 0;
+  let currentTiltX = 0, currentTiltY = 0;
+  let userDragOffset = 0;
+  let targetFocusAngle = 0;
+  let currentFocusAngle = 0;
+  let isDragging = false;
   let activeRoleIndex = 0;
-  let isVisible = true;
 
-  // Raycasting
-  let raycaster;
-  let mouse;
+  let raycaster, mouse;
 
   function createTextSprite(text, isCenter = false) {
     const canvas = document.createElement('canvas');
@@ -51,11 +49,10 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (isCenter) {
-      // Badge central élégant
-      ctx.fillStyle = 'rgba(14, 21, 36, 0.88)';
+      ctx.fillStyle = 'rgba(14, 21, 36, 0.92)';
       ctx.strokeStyle = '#D4AF37';
       ctx.lineWidth = 4;
-      roundRect(ctx, 40, 20, 432, 88, 44);
+      roundRect(ctx, 36, 18, 440, 92, 46);
       ctx.fill();
       ctx.stroke();
 
@@ -65,11 +62,10 @@
       ctx.textBaseline = 'middle';
       ctx.fillText(text, 256, 64);
     } else {
-      // Badge satellite
-      ctx.fillStyle = 'rgba(21, 31, 52, 0.82)';
-      ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+      ctx.fillStyle = 'rgba(21, 31, 52, 0.88)';
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.65)';
       ctx.lineWidth = 3;
-      roundRect(ctx, 20, 24, 472, 80, 20);
+      roundRect(ctx, 20, 22, 472, 84, 20);
       ctx.fill();
       ctx.stroke();
 
@@ -77,19 +73,25 @@
       ctx.fillStyle = '#F5E8C7';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.letterSpacing = '2px';
       ctx.fillText(text, 256, 64);
     }
 
     const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
     texture.minFilter = THREE.LinearFilter;
-    const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
+
+    const spriteMaterial = new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false
+    });
+
     const sprite = new THREE.Sprite(spriteMaterial);
-    
     if (isCenter) {
-      sprite.scale.set(3.8, 0.95, 1);
+      sprite.scale.set(4.0, 1.0, 1);
     } else {
-      sprite.scale.set(3.2, 0.8, 1);
+      sprite.scale.set(3.4, 0.85, 1);
     }
     return sprite;
   }
@@ -108,181 +110,272 @@
     ctx.closePath();
   }
 
+  function renderFallbackSVG() {
+    if (!container) return;
+    container.innerHTML = `
+      <div class="casquettes-svg-fallback" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
+        <svg viewBox="-260 -260 520 520" style="width:90%;max-width:500px;height:auto;overflow:visible;">
+          <defs>
+            <radialGradient id="fbCenterGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFE58F" />
+              <stop offset="60%" stop-color="#D4AF37" />
+              <stop offset="100%" stop-color="#94721C" />
+            </radialGradient>
+            <filter id="fbGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <g id="svg-constellation-rotator" style="animation: spinConstellation 50s linear infinite; transform-origin: 0 0;">
+            <!-- Lignes de liaison -->
+            ${roles.map((r, i) => {
+              const ang = (i / roles.length) * Math.PI * 2;
+              const x = Math.cos(ang) * 190;
+              const y = Math.sin(ang) * 190;
+              return `<line x1="0" y1="0" x2="${x}" y2="${y}" stroke="rgba(212,175,55,0.4)" stroke-width="1.5" stroke-dasharray="4,4" />`;
+            }).join('')}
+            <!-- Anneau orbital -->
+            <circle cx="0" cy="0" r="190" fill="none" stroke="rgba(212,175,55,0.2)" stroke-width="1" />
+            <!-- Nœuds satellites -->
+            ${roles.map((r, i) => {
+              const ang = (i / roles.length) * Math.PI * 2;
+              const x = Math.cos(ang) * 190;
+              const y = Math.sin(ang) * 190;
+              return `
+                <g class="svg-node" data-role-idx="${i}" style="cursor:pointer;" transform="translate(${x},${y})">
+                  <circle cx="0" cy="0" r="18" fill="#151F34" stroke="#D4AF37" stroke-width="2.5" filter="url(#fbGlow)" />
+                  <circle cx="0" cy="0" r="8" fill="#F5E8C7" />
+                  <rect x="-70" y="24" width="140" height="26" rx="13" fill="rgba(14,21,36,0.9)" stroke="rgba(212,175,55,0.6)" stroke-width="1" />
+                  <text x="0" y="41" text-anchor="middle" fill="#F5E8C7" font-size="10" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700" letter-spacing="1">${r.name}</text>
+                </g>
+              `;
+            }).join('')}
+          </g>
+          <!-- Centre fixe -->
+          <circle cx="0" cy="0" r="42" fill="url(#fbCenterGrad)" filter="url(#fbGlow)" />
+          <circle cx="0" cy="0" r="48" fill="none" stroke="#F5E8C7" stroke-width="1.5" opacity="0.5" />
+          <text x="0" y="6" text-anchor="middle" fill="#090D16" font-size="12" font-family="'Fraunces',Georgia,serif" font-weight="700" letter-spacing="1">SOUKAINA</text>
+        </svg>
+        <div class="casquettes-3d-hint">● Cliquez sur un rôle pour explorer</div>
+      </div>
+      <style>
+        @keyframes spinConstellation {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .svg-node:hover circle:first-child {
+          stroke: #FFFFFF;
+          stroke-width: 3.5;
+        }
+      </style>
+    `;
+
+    container.querySelectorAll('.svg-node').forEach(node => {
+      node.addEventListener('click', (e) => {
+        const idx = parseInt(node.getAttribute('data-role-idx'), 10);
+        if (!isNaN(idx)) {
+          if (window.onRoleSelectedIn3D) window.onRoleSelectedIn3D(idx);
+          if (window.setActiveRoleFromCard) window.setActiveRoleFromCard(idx);
+        }
+      });
+    });
+  }
+
   function init() {
     container = document.getElementById('casquettes-canvas-container');
     if (!container) return;
 
+    // Si THREE n'est pas encore disponible
     if (typeof THREE === 'undefined') {
       setTimeout(init, 100);
       return;
     }
 
-    raycaster = new THREE.Raycaster();
-    mouse = new THREE.Vector2(-999, -999);
+    try {
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2(-999, -999);
 
-    width = container.clientWidth || 550;
-    height = container.clientHeight || width || 550;
+      width = container.clientWidth || 550;
+      height = container.clientHeight || width || 550;
 
-    scene = new THREE.Scene();
+      scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = 15;
+      const aspect = width / height;
+      camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
+      camera.position.z = aspect < 1 ? (15 / aspect) * 0.85 : 15;
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setClearColor(0x000000, 0);
-
-    const canvasElement = renderer.domElement;
-    canvasElement.id = 'casquettes-canvas';
-    canvasElement.style.width = '100%';
-    canvasElement.style.height = '100%';
-    canvasElement.style.display = 'block';
-    canvasElement.setAttribute('aria-label', 'Constellation 3D interactive représentant les 6 casquettes de Soukaina Belhouk');
-    
-    container.innerHTML = '';
-    container.appendChild(canvasElement);
-
-    const hint = document.createElement('div');
-    hint.className = 'casquettes-3d-hint';
-    hint.innerHTML = '● Faites tourner la constellation · Cliquez sur un rôle';
-    container.appendChild(hint);
-
-    constellationGroup = new THREE.Group();
-    scene.add(constellationGroup);
-
-    // Lumières subtiles
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
-    scene.add(ambientLight);
-
-    const pointLight = new THREE.PointLight(0xD4AF37, 2.2, 50);
-    pointLight.position.set(0, 0, 8);
-    scene.add(pointLight);
-
-    // 1. Noyau Central : SOUKAINA
-    const centerGeo = new THREE.SphereGeometry(1.1, 32, 32);
-    const centerMat = new THREE.MeshStandardMaterial({
-      color: 0xD4AF37,
-      metalness: 0.85,
-      roughness: 0.25,
-      emissive: 0x94721C,
-      emissiveIntensity: 0.6
-    });
-    centerMesh = new THREE.Mesh(centerGeo, centerMat);
-    constellationGroup.add(centerMesh);
-
-    // Halo autour du noyau central
-    const haloGeo = new THREE.RingGeometry(1.35, 1.45, 64);
-    const haloMat = new THREE.MeshBasicMaterial({
-      color: 0xE2CA8C,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.4
-    });
-    const haloMesh = new THREE.Mesh(haloGeo, haloMat);
-    constellationGroup.add(haloMesh);
-
-    // Label du noyau central
-    centerSprite = createTextSprite('SOUKAINA', true);
-    centerSprite.position.set(0, -1.8, 0);
-    constellationGroup.add(centerSprite);
-
-    // 2. Les 6 Nœuds Périphériques (Les Casquettes)
-    const orbitRadius = 4.8;
-    const linePositions = [];
-
-    roles.forEach((role, idx) => {
-      const angle = (idx / roles.length) * Math.PI * 2;
-      const x = Math.cos(angle) * orbitRadius;
-      const y = Math.sin(angle) * (orbitRadius * 0.75);
-      const z = Math.sin(angle * 2) * 1.4;
-
-      // Nœud sphérique
-      const nodeGeo = new THREE.SphereGeometry(0.52, 24, 24);
-      const nodeMat = new THREE.MeshStandardMaterial({
-        color: role.color,
-        metalness: 0.7,
-        roughness: 0.3,
-        emissive: role.color,
-        emissiveIntensity: 0.35
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
       });
-      const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
-      nodeMesh.position.set(x, y, z);
-      nodeMesh.userData = { index: idx, id: role.id };
-      nodeMeshes.push(nodeMesh);
-      constellationGroup.add(nodeMesh);
 
-      // Label texte attaché au nœud
-      const sprite = createTextSprite(role.name, false);
-      sprite.position.set(x, y - 0.95, z);
-      sprite.userData = { index: idx, id: role.id };
-      nodeSprites.push(sprite);
-      constellationGroup.add(sprite);
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setClearColor(0x000000, 0);
 
-      // Ligne vers le centre
-      linePositions.push(0, 0, 0);
-      linePositions.push(x, y, z);
+      const canvasElement = renderer.domElement;
+      canvasElement.id = 'casquettes-canvas';
+      canvasElement.style.width = '100%';
+      canvasElement.style.height = '100%';
+      canvasElement.style.display = 'block';
+      canvasElement.setAttribute('aria-label', 'Constellation 3D interactive représentant les 6 casquettes de Soukaina Belhouk');
 
-      // Ligne vers le nœud suivant pour fermer la constellation
-      const nextAngle = ((idx + 1) / roles.length) * Math.PI * 2;
-      const nx = Math.cos(nextAngle) * orbitRadius;
-      const ny = Math.sin(nextAngle) * (orbitRadius * 0.75);
-      const nz = Math.sin(nextAngle * 2) * 1.4;
-      linePositions.push(x, y, z);
-      linePositions.push(nx, ny, nz);
-    });
+      container.innerHTML = '';
+      container.appendChild(canvasElement);
 
-    // Création des lignes de constellation
-    const lineGeo = new THREE.BufferGeometry();
-    lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-    const lineMat = new THREE.LineBasicMaterial({
-      color: 0xD4AF37,
-      transparent: true,
-      opacity: 0.35
-    });
-    connectionLines = new THREE.LineSegments(lineGeo, lineMat);
-    constellationGroup.add(connectionLines);
+      const hint = document.createElement('div');
+      hint.className = 'casquettes-3d-hint';
+      hint.innerHTML = '● Faites tourner la constellation · Cliquez sur un rôle';
+      container.appendChild(hint);
 
-    // 3. Nuage de micro-particules dorées
-    const particleCount = 120;
-    const particlePositions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      particlePositions[i] = (Math.random() - 0.5) * 16;
-      particlePositions[i + 1] = (Math.random() - 0.5) * 16;
-      particlePositions[i + 2] = (Math.random() - 0.5) * 10;
+      constellationGroup = new THREE.Group();
+      scene.add(constellationGroup);
+
+      // Lumières
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
+      scene.add(ambientLight);
+
+      const pointLight = new THREE.PointLight(0xD4AF37, 2.5, 60);
+      pointLight.position.set(0, 0, 10);
+      scene.add(pointLight);
+
+      const backLight = new THREE.PointLight(0xF5E8C7, 1.2, 40);
+      backLight.position.set(0, 4, -8);
+      scene.add(backLight);
+
+      // 1. Noyau Central : SOUKAINA
+      const centerGeo = new THREE.SphereGeometry(1.2, 32, 32);
+      const centerMat = new THREE.MeshStandardMaterial({
+        color: 0xD4AF37,
+        metalness: 0.85,
+        roughness: 0.2,
+        emissive: 0xAA8222,
+        emissiveIntensity: 0.7
+      });
+      centerMesh = new THREE.Mesh(centerGeo, centerMat);
+      constellationGroup.add(centerMesh);
+
+      // Anneau orbital central
+      const ringGeo = new THREE.RingGeometry(1.5, 1.62, 64);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0xF3E5AB,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.5
+      });
+      ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 2.3;
+      constellationGroup.add(ringMesh);
+
+      // Label central
+      centerSprite = createTextSprite('SOUKAINA', true);
+      centerSprite.position.set(0, -1.95, 0);
+      constellationGroup.add(centerSprite);
+
+      // 2. Les 6 Satellites (Casquettes)
+      const orbitRadius = 4.8;
+      const linePositions = [];
+
+      roles.forEach((role, idx) => {
+        const angle = (idx / roles.length) * Math.PI * 2;
+        const x = Math.cos(angle) * orbitRadius;
+        const y = Math.sin(angle) * (orbitRadius * 0.72);
+        const z = Math.sin(angle * 2) * 1.5;
+
+        // Nœud 3D
+        const nodeGeo = new THREE.SphereGeometry(0.55, 24, 24);
+        const nodeMat = new THREE.MeshStandardMaterial({
+          color: role.color,
+          metalness: 0.75,
+          roughness: 0.25,
+          emissive: role.color,
+          emissiveIntensity: 0.5
+        });
+        const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
+        nodeMesh.position.set(x, y, z);
+        nodeMesh.userData = { index: idx, id: role.id };
+        nodeMeshes.push(nodeMesh);
+        constellationGroup.add(nodeMesh);
+
+        // Label sprite
+        const sprite = createTextSprite(role.name, false);
+        sprite.position.set(x, y - 0.95, z);
+        sprite.userData = { index: idx, id: role.id };
+        nodeSprites.push(sprite);
+        constellationGroup.add(sprite);
+
+        // Rayon vers le centre
+        linePositions.push(0, 0, 0);
+        linePositions.push(x, y, z);
+
+        // Liaison vers satellite suivant
+        const nextAngle = ((idx + 1) / roles.length) * Math.PI * 2;
+        const nx = Math.cos(nextAngle) * orbitRadius;
+        const ny = Math.sin(nextAngle) * (orbitRadius * 0.72);
+        const nz = Math.sin(nextAngle * 2) * 1.5;
+        linePositions.push(x, y, z);
+        linePositions.push(nx, ny, nz);
+      });
+
+      // Lignes dorées
+      const lineGeo = new THREE.BufferGeometry();
+      lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+      const lineMat = new THREE.LineBasicMaterial({
+        color: 0xD4AF37,
+        transparent: true,
+        opacity: 0.45
+      });
+      connectionLines = new THREE.LineSegments(lineGeo, lineMat);
+      constellationGroup.add(connectionLines);
+
+      // Particules flottantes
+      const particleCount = 140;
+      const particlePositions = new Float32Array(particleCount * 3);
+      for (let i = 0; i < particleCount * 3; i += 3) {
+        particlePositions[i] = (Math.random() - 0.5) * 16;
+        particlePositions[i + 1] = (Math.random() - 0.5) * 16;
+        particlePositions[i + 2] = (Math.random() - 0.5) * 10;
+      }
+      const particleGeo = new THREE.BufferGeometry();
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+      const particleMat = new THREE.PointsMaterial({
+        color: 0xF5E8C7,
+        size: 0.09,
+        transparent: true,
+        opacity: 0.65
+      });
+      particleSystem = new THREE.Points(particleGeo, particleMat);
+      constellationGroup.add(particleSystem);
+
+      // Événements
+      setupEvents();
+
+      // État actif initial
+      updateActiveRole(0, false);
+
+      // Ajustement initial
+      onWindowResize();
+
+      // Rendu initial
+      renderer.render(scene, camera);
+
+      // Lancement de la boucle d'animation
+      animate();
+
+    } catch (err) {
+      console.warn('WebGL non disponible, bascule sur SVG interactif:', err);
+      renderFallbackSVG();
     }
-    const particleGeo = new THREE.BufferGeometry();
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    const particleMat = new THREE.PointsMaterial({
-      color: 0xE2CA8C,
-      size: 0.08,
-      transparent: true,
-      opacity: 0.6
-    });
-    particleSystem = new THREE.Points(particleGeo, particleMat);
-    constellationGroup.add(particleSystem);
-
-    // Événements
-    setupEvents();
-
-    // IntersectionObserver pour pause de rendu hors champ
-    setupObserver();
-
-    // Initialiser l'état actif
-    updateActiveRole(0, false);
-
-    // Rendu initial garanti
-    onWindowResize();
-    renderer.render(scene, camera);
-
-    // Démarrer la boucle
-    animate();
   }
 
   function setupEvents() {
     const el = renderer.domElement;
 
-    // Interaction Souris (Desktop)
+    // Souris Desktop
     el.addEventListener('mousemove', (e) => {
       const rect = el.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -291,38 +384,37 @@
       mouse.x = (x / rect.width) * 2 - 1;
       mouse.y = -(y / rect.height) * 2 + 1;
 
-      targetRotationY = ((x / rect.width) - 0.5) * 1.5;
-      targetRotationX = ((y / rect.height) - 0.5) * 1.0;
+      targetTiltY = ((x / rect.width) - 0.5) * 0.9;
+      targetTiltX = ((y / rect.height) - 0.5) * 0.6;
     });
 
-    el.addEventListener('mouseenter', () => { isHovered = true; });
     el.addEventListener('mouseleave', () => {
-      isHovered = false;
-      targetRotationX = 0;
+      targetTiltX = 0;
+      targetTiltY = 0;
       mouse.x = -999;
       mouse.y = -999;
     });
 
-    // Interaction Tactile (Mobile)
+    // Touch Mobile (Drag rotation)
     let touchStartX = 0;
     el.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
+        isDragging = true;
         touchStartX = e.touches[0].clientX;
-        isHovered = true;
       }
     }, { passive: true });
 
-    el.addEventListener('touchend', () => { isHovered = false; }, { passive: true });
+    el.addEventListener('touchend', () => { isDragging = false; }, { passive: true });
 
     el.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1) {
-        const deltaX = (e.touches[0].clientX - touchStartX) * 0.015;
-        targetRotationY += deltaX;
+      if (isDragging && e.touches.length === 1) {
+        const deltaX = (e.touches[0].clientX - touchStartX) * 0.012;
+        userDragOffset += deltaX;
         touchStartX = e.touches[0].clientX;
       }
     }, { passive: true });
 
-    // Clic pour sélectionner un rôle
+    // Clic / Tap de sélection
     el.addEventListener('click', () => {
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects([...nodeMeshes, ...nodeSprites]);
@@ -336,8 +428,8 @@
       }
     });
 
-    // Redimensionnement
     window.addEventListener('resize', onWindowResize, { passive: true });
+    window.addEventListener('load', () => setTimeout(onWindowResize, 200));
   }
 
   function onWindowResize() {
@@ -354,24 +446,6 @@
     renderer.render(scene, camera);
   }
 
-  function setupObserver() {
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            onWindowResize();
-          }
-        });
-      }, { threshold: 0.05 });
-      observer.observe(container);
-    }
-
-    document.addEventListener('visibilitychange', () => {
-      isVisible = !document.hidden;
-    });
-  }
-
-  // Synchronisation avec les cartes HTML de la section
   window.setActiveRoleFromCard = function (index) {
     updateActiveRole(index, false);
   };
@@ -379,22 +453,18 @@
   function updateActiveRole(index, triggerDomEvent) {
     activeRoleIndex = index;
 
-    // Mise à jour visuelle des nœuds 3D
     nodeMeshes.forEach((mesh, idx) => {
       if (idx === index) {
-        mesh.scale.set(1.4, 1.4, 1.4);
+        mesh.scale.set(1.45, 1.45, 1.45);
         mesh.material.emissiveIntensity = 1.0;
       } else {
         mesh.scale.set(1.0, 1.0, 1.0);
-        mesh.material.emissiveIntensity = 0.35;
+        mesh.material.emissiveIntensity = 0.4;
       }
     });
 
-    // Faire pivoter la constellation vers le rôle sélectionné
-    const targetAngle = -(index / roles.length) * Math.PI * 2 + Math.PI / 2;
-    targetRotationY = targetAngle * 0.6;
+    targetFocusAngle = -(index / roles.length) * Math.PI * 2 + Math.PI / 2;
 
-    // Déclencher la mise à jour côté DOM si initié par clic 3D
     if (triggerDomEvent && window.onRoleSelectedIn3D) {
       window.onRoleSelectedIn3D(index);
     }
@@ -405,26 +475,35 @@
 
     if (document.hidden) return;
 
-    // Rotation douce
-    if (!prefersReducedMotion && !isHovered) {
-      constellationGroup.rotation.y += 0.0035;
+    // Rotation continue ininterrompue
+    if (!prefersReducedMotion) {
+      baseRotationY += 0.0045;
     }
 
-    // Amortissement de la rotation ciblée
-    constellationGroup.rotation.y += (targetRotationY - constellationGroup.rotation.y) * 0.05;
-    constellationGroup.rotation.x += (targetRotationX - constellationGroup.rotation.x) * 0.05;
+    // Amortissement fluide des tilts et focus
+    currentTiltX += (targetTiltX - currentTiltX) * 0.08;
+    currentTiltY += (targetTiltY - currentTiltY) * 0.08;
+    currentFocusAngle += (targetFocusAngle - currentFocusAngle) * 0.05;
 
-    // Pulsation discrète du centre
+    if (constellationGroup) {
+      constellationGroup.rotation.y = baseRotationY + currentFocusAngle + currentTiltY + userDragOffset;
+      constellationGroup.rotation.x = currentTiltX;
+    }
+
+    // Pulsation douce du noyau
     if (!prefersReducedMotion && centerMesh) {
-      const time = Date.now() * 0.002;
-      const scale = 1 + Math.sin(time) * 0.04;
+      const time = Date.now() * 0.0025;
+      const scale = 1 + Math.sin(time) * 0.05;
       centerMesh.scale.set(scale, scale, scale);
+      if (ringMesh) ringMesh.rotation.z += 0.004;
     }
 
-    renderer.render(scene, camera);
+    if (renderer && scene && camera) {
+      renderer.render(scene, camera);
+    }
   }
 
-  // Démarrage lorsque le DOM est prêt
+  // Démarrage garanti
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       init();
@@ -436,8 +515,4 @@
     setTimeout(onWindowResize, 300);
     setTimeout(onWindowResize, 1000);
   }
-
-  window.addEventListener('load', () => {
-    setTimeout(onWindowResize, 200);
-  });
 })();
